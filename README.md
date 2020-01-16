@@ -24,7 +24,7 @@
 1. Clone this repository.
 2. cd into this directory.
 3. `go build .`
-4. Run the binary with environment variable `LIBP2P_ALLOW_WEAK_RSA_KEYS=true`.
+4. Run the binary with environment variable `LIBP2P_ALLOW_WEAK_RSA_KEYS=1`.
 
 ## License
 
