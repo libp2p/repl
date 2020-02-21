@@ -8,8 +8,11 @@ import (
 
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/metrics"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
+
+	introspector "github.com/libp2p/go-libp2p-introspector"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	protocol "github.com/libp2p/go-libp2p-protocol"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -47,11 +50,13 @@ func NewREPL() (*REPL, error) {
 		return kaddht, err
 	}
 
-	// Let's build a new libp2p host. The New constructor uses functional
+	// Let's build a new libp2p host with introspection enabled. The New constructor uses functional
 	// parameters. You don't need to provide any parameters. libp2p comes with
 	// sane defaults OOTB, but in order to stay slim, we don't attach a routing
 	// implementation by default. Let's do that.
-	host, err := libp2p.New(ctx, libp2p.Routing(newDHT))
+	host, err := libp2p.New(ctx, libp2p.Routing(newDHT), libp2p.Introspector(introspector.NewDefaultIntrospector(),
+		introspector.WsServerWithConfig(&introspector.WsServerConfig{ListenAddrs: []string{"127.0.0.1:"}})),
+		libp2p.BandwidthReporter(metrics.NewBandwidthCounter()))
 	if err != nil {
 		cancel()
 		return nil, err
@@ -92,6 +97,7 @@ func (r *REPL) Run() {
 		exec func() error
 	}{
 		{"My info", r.handleMyInfo},
+		{"Introspect Host", r.handleIntrospect},
 		{"DHT: Bootstrap (public seeds)", func() error { return r.handleDHTBootstrap(dht.DefaultBootstrapPeers...) }},
 		{"DHT: Bootstrap (no seeds)", func() error { return r.handleDHTBootstrap() }},
 		{"DHT: Announce service", r.handleAnnounceService},
