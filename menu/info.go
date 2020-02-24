@@ -1,6 +1,10 @@
 package menu
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/libp2p/go-libp2p-core/host"
+)
 
 func (r *REPL) handleMyInfo() error {
 	// 0b. Let's get a sense of what those defaults are. What transports are we
@@ -27,6 +31,16 @@ func (r *REPL) handleMyInfo() error {
 	fmt.Println("Protocols:")
 	for _, p := range r.h.Mux().Protocols() {
 		fmt.Printf("\t%s\n", p)
+	}
+
+	// What addresses is the introspection server listening on
+	ih, ok := r.h.(host.IntrospectableHost)
+	if ok {
+		fmt.Println()
+		fmt.Println("Introspection server Listen Addresses:")
+		for _, a := range ih.IntrospectionEndpoint().ListenAddrs() {
+			fmt.Printf("\t%s\n", a)
+		}
 	}
 
 	// What peers do we have in our peerstore? (hint: we've connected to nobody so far).
