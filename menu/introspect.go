@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	introspection_pb "github.com/libp2p/go-libp2p-core/introspection/pb"
 	"github.com/libp2p/go-libp2p-core/host"
+	introspection_pb "github.com/libp2p/go-libp2p-core/introspection/pb"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/gorilla/websocket"
