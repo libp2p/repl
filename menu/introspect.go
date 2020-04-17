@@ -7,8 +7,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/host"
 	introspection_pb "github.com/libp2p/go-libp2p-core/introspection/pb"
 
-	"github.com/golang/protobuf/proto"
 	"github.com/gorilla/websocket"
+	"github.com/gogo/protobuf/proto"
 )
 
 func (r *REPL) handleIntrospect() error {
@@ -27,23 +27,26 @@ func (r *REPL) handleIntrospect() error {
 	}
 	defer connection.Close()
 
-	// fetch & unmarshal h1 state
-	var state *introspection_pb.State
-	if err := connection.WriteMessage(websocket.TextMessage, []byte("trigger fetch")); err != nil {
-		return errors.New(fmt.Sprintf("failed to send request to WS introspection server, err=%s", err))
-	}
-
-	// read response & unmarshal
-	_, msg, err := connection.ReadMessage()
+	// first read the Runtime message
+	_, bz, err := connection.ReadMessage()
 	if err != nil {
-		return errors.New(fmt.Sprintf("failed to read response from WS introspection server, err=%s", err))
+		return fmt.Errorf("failed to read runtime message from WS server, err%s", err)
 	}
-	state = &introspection_pb.State{}
-	if err := proto.Unmarshal(msg, state); err != nil {
-		return errors.New(fmt.Sprintf("failed to unmarshal response read from WS introspection server, err=%s", err))
+	wrapper := &introspection_pb.ProtocolDataPacket{}
+	if err := proto.Unmarshal(bz, wrapper); err != nil {
+		return fmt.Errorf("failed to unamrshal runtime message, err=%s", err)
 	}
+	fmt.Printf("\n -----Introspection Runtime Result:-----\n\n %s", proto.MarshalTextString(wrapper.GetRuntime()))
 
-	fmt.Printf("\n -----Host Introspection Result:-----\n\n %s", proto.MarshalTextString(state))
+	// Then the State message
+	_, bz, err = connection.ReadMessage()
+	if err != nil {
+		return fmt.Errorf("failed to read state message from WS server, err%s", err)
+	}
+	if err := proto.Unmarshal(bz, wrapper); err != nil {
+		return fmt.Errorf("failed to unamrshal state message, err=%s", err)
+	}
+	fmt.Printf("\n -----Introspection State Result:-----\n\n %s", proto.MarshalTextString(wrapper.GetState()))
 
 	return err
 }
