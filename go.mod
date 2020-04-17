@@ -8,14 +8,17 @@ require (
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/protobuf v1.3.2
 	github.com/gorilla/websocket v1.4.2
-	github.com/libp2p/go-libp2p v0.8.1-0.20200417064624-9fa05d6ef67b
-	github.com/libp2p/go-libp2p-core v0.5.2-0.20200417060929-6957bf8a421d
+	github.com/ipfs/go-todocounter v0.0.1 // indirect
+	github.com/libp2p/go-libp2p v0.8.1-0.20200417083328-00fa2867aee2
+	github.com/libp2p/go-libp2p-core v0.5.2-0.20200417081628-b224967ed43f
 	github.com/libp2p/go-libp2p-discovery v0.3.0
-	github.com/libp2p/go-libp2p-introspector v0.0.5-0.20200417062351-cc3f2009f930
-	github.com/libp2p/go-libp2p-kad-dht v0.2.1
+	github.com/libp2p/go-libp2p-introspector v0.0.5-0.20200417083205-a06bfb6943a5
+	github.com/libp2p/go-libp2p-kad-dht v0.7.5-0.20200417090150-2a39ff75d238
 	github.com/libp2p/go-libp2p-protocol v0.1.0
 	github.com/libp2p/go-libp2p-pubsub v0.1.1
 	github.com/libp2p/go-libp2p-routing v0.1.0
 	github.com/manifoldco/promptui v0.7.0
 	github.com/multiformats/go-multiaddr v0.2.1
+	github.com/whyrusleeping/base32 v0.0.0-20170828182744-c30ac30633cc // indirect
+	github.com/whyrusleeping/go-notifier v0.0.0-20170827234753-097c5d47330f // indirect
 )

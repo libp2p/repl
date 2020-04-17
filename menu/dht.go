@@ -48,8 +48,9 @@ func (r *REPL) handleDHTBootstrap(seeds ...multiaddr.Multiaddr) error {
 
 	wg.Wait()
 
-	if err := r.dht.BootstrapRandom(ctx); err != nil && err != context.DeadlineExceeded {
-		return fmt.Errorf("failed while bootstrapping DHT: %w", err)
+	select {
+	case <-r.dht.RefreshRoutingTable():
+	case <-ctx.Done():
 	}
 
 	fmt.Println("bootstrap OK! Routing table:")
