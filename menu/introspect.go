@@ -33,7 +33,7 @@ func (r *REPL) handleIntrospect() error {
 		return fmt.Errorf("failed to read runtime message from WS server, err%s", err)
 	}
 	wrapper := &introspection_pb.ProtocolDataPacket{}
-	if err := proto.Unmarshal(bz, wrapper); err != nil {
+	if err := proto.Unmarshal(bz[12:], wrapper); err != nil {
 		return fmt.Errorf("failed to unamrshal runtime message, err=%s", err)
 	}
 	fmt.Printf("\n -----Introspection Runtime Result:-----\n\n %s", proto.MarshalTextString(wrapper.GetRuntime()))
@@ -43,7 +43,7 @@ func (r *REPL) handleIntrospect() error {
 	if err != nil {
 		return fmt.Errorf("failed to read state message from WS server, err%s", err)
 	}
-	if err := proto.Unmarshal(bz, wrapper); err != nil {
+	if err := proto.Unmarshal(bz[12:], wrapper); err != nil {
 		return fmt.Errorf("failed to unamrshal state message, err=%s", err)
 	}
 	fmt.Printf("\n -----Introspection State Result:-----\n\n %s", proto.MarshalTextString(wrapper.GetState()))
