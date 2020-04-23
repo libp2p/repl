@@ -224,6 +224,8 @@ github.com/libp2p/go-libp2p v0.8.1-0.20200417083328-00fa2867aee2 h1:Kb+0UbLTFfl8
 github.com/libp2p/go-libp2p v0.8.1-0.20200417083328-00fa2867aee2/go.mod h1:S1nzyPt2jUnHsZGWPkzqipWwkvRdcs05e7h74Xbur+M=
 github.com/libp2p/go-libp2p v0.8.1-0.20200417132514-a6300bc7b537 h1:h3nWmZS/+MRJye62CaiH9LHg5C05jeZjh/PW7JazWdc=
 github.com/libp2p/go-libp2p v0.8.1-0.20200417132514-a6300bc7b537/go.mod h1:6hgjpEUMRsWTnLis/J7C1TOZo3tApCYDqRdQ5fb6Mpw=
+github.com/libp2p/go-libp2p v0.8.1-0.20200423090039-b31732835e10 h1:n09bFIuqisAaIIHmr60kDEeJwU85YsRLIQMIteNBHoQ=
+github.com/libp2p/go-libp2p v0.8.1-0.20200423090039-b31732835e10/go.mod h1:+O6+OYUmmpIW/ZXan2V4eZqa08fGFxr1pY6X7UAJSEI=
 github.com/libp2p/go-libp2p-autonat v0.1.0 h1:aCWAu43Ri4nU0ZPO7NyLzUvvfqd0nE3dX0R/ZGYVgOU=
 github.com/libp2p/go-libp2p-autonat v0.1.0/go.mod h1:1tLf2yXxiE/oKGtDwPYWTSYG3PtvYlJmg7NeVtPRqH8=
 github.com/libp2p/go-libp2p-autonat v0.1.1 h1:WLBZcIRsjZlWdAZj9CiBSvU2wQXoUOiS1Zk1tM7DTJI=
@@ -353,6 +355,8 @@ github.com/libp2p/go-libp2p-swarm v0.2.3-0.20200416170506-690b776aa519/go.mod h1
 github.com/libp2p/go-libp2p-swarm v0.2.3/go.mod h1:P2VO/EpxRyDxtChXz/VPVXyTnszHvokHKRhfkEgFKNM=
 github.com/libp2p/go-libp2p-swarm v0.2.4-0.20200417062831-28eda91e270f h1:LX+udu+3auqLiYpHrd1+MXOdMNTfB4PRtIO0++pbadM=
 github.com/libp2p/go-libp2p-swarm v0.2.4-0.20200417062831-28eda91e270f/go.mod h1:G6UrNovm3+thMwE2MU8xCw5v2Ov1eZOp+zcmv4aU6aI=
+github.com/libp2p/go-libp2p-swarm v0.2.4-0.20200423085602-109ffd0eb55b h1:ZjdUXxKjtOH22t5UGfHY/lb/avP2lUO7OVJ6f9y4MPQ=
+github.com/libp2p/go-libp2p-swarm v0.2.4-0.20200423085602-109ffd0eb55b/go.mod h1:G6UrNovm3+thMwE2MU8xCw5v2Ov1eZOp+zcmv4aU6aI=
 github.com/libp2p/go-libp2p-testing v0.0.2/go.mod h1:gvchhf3FQOtBdr+eFUABet5a4MBLK8jM3V4Zghvmi+E=
 github.com/libp2p/go-libp2p-testing v0.0.3/go.mod h1:gvchhf3FQOtBdr+eFUABet5a4MBLK8jM3V4Zghvmi+E=
 github.com/libp2p/go-libp2p-testing v0.0.4/go.mod h1:gvchhf3FQOtBdr+eFUABet5a4MBLK8jM3V4Zghvmi+E=
