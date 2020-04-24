@@ -9,7 +9,7 @@ require (
 	github.com/golang/protobuf v1.3.2
 	github.com/gorilla/websocket v1.4.2
 	github.com/ipfs/go-todocounter v0.0.1 // indirect
-	github.com/libp2p/go-libp2p v0.8.1-0.20200424092614-dc74d13909c3
+	github.com/libp2p/go-libp2p v0.8.1-0.20200424120800-4a4c3bc5212b
 	github.com/libp2p/go-libp2p-core v0.5.2-0.20200424084047-616e011e7e9d
 	github.com/libp2p/go-libp2p-discovery v0.3.0
 	github.com/libp2p/go-libp2p-introspector v0.0.5-0.20200424091613-bee588f5a69a
