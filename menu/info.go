@@ -33,7 +33,7 @@ func (r *REPL) handleMyInfo() error {
 		fmt.Printf("\t%s\n", p)
 	}
 
-	// What addresses is the introspection server listening on
+	// What addresses is the introspect server listening on
 	ih, ok := r.h.(host.IntrospectableHost)
 	if ok {
 		fmt.Println()

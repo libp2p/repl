@@ -29,8 +29,8 @@ func (r *REPL) handleConnect() error {
 	return r.h.Connect(ctx, *ai)
 }
 
-func (t *REPL) handleListConnectedPeers() error {
-	for _, c := range t.h.Network().Conns() {
+func (r *REPL) handleListConnectedPeers() error {
+	for _, c := range r.h.Network().Conns() {
 		fmt.Println("connected to", c.RemotePeer(), "on", c.RemoteMultiaddr())
 	}
 

@@ -6,22 +6,24 @@ import (
 	"sync"
 	"time"
 
-	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/host"
+	pb "github.com/libp2p/go-libp2p-core/introspection/pb"
 	"github.com/libp2p/go-libp2p-core/metrics"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/routing"
 
-	introspector "github.com/libp2p/go-libp2p-introspector"
-	dht "github.com/libp2p/go-libp2p-kad-dht"
-	protocol "github.com/libp2p/go-libp2p-protocol"
-	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	routing "github.com/libp2p/go-libp2p-routing"
+	"github.com/libp2p/go-libp2p"
+	"github.com/libp2p/go-libp2p/introspect"
+	"github.com/libp2p/go-libp2p/introspect/ws"
 	"github.com/libp2p/go-libp2p/p2p/discovery"
 
-	"github.com/multiformats/go-multiaddr"
+	dht "github.com/libp2p/go-libp2p-kad-dht"
+	"github.com/libp2p/go-libp2p-pubsub"
 
+	"github.com/gorilla/websocket"
 	"github.com/manifoldco/promptui"
+	"github.com/multiformats/go-multiaddr"
 )
 
 type REPL struct {
@@ -36,6 +38,7 @@ type REPL struct {
 	mdnsPeers map[peer.ID]peer.AddrInfo
 	messages  map[string][]*pubsub.Message
 	streams   chan network.Stream
+	wsconn    *websocket.Conn
 }
 
 func NewREPL() (*REPL, error) {
@@ -50,13 +53,18 @@ func NewREPL() (*REPL, error) {
 		return kaddht, err
 	}
 
-	// Let's build a new libp2p host with introspection enabled. The New constructor uses functional
+	// Let's build a new libp2p host with introspect enabled. The New constructor uses functional
 	// parameters. You don't need to provide any parameters. libp2p comes with
 	// sane defaults OOTB, but in order to stay slim, we don't attach a routing
 	// implementation by default. Let's do that.
-	host, err := libp2p.New(ctx, libp2p.Routing(newDHT), libp2p.Introspector(introspector.NewDefaultIntrospector(),
-		introspector.WsServerWithConfig(&introspector.WsServerConfig{ListenAddrs: []string{"127.0.0.1:"}})),
+	host, err := libp2p.New(ctx,
+		libp2p.Routing(newDHT),
+		libp2p.Introspection(
+			introspect.NewDefaultIntrospector,
+			ws.EndpointWithConfig(&ws.EndpointConfig{ListenAddrs: []string{"127.0.0.1:"}}),
+		),
 		libp2p.BandwidthReporter(metrics.NewBandwidthCounter()))
+
 	if err != nil {
 		cancel()
 		return nil, err
@@ -85,19 +93,20 @@ func NewREPL() (*REPL, error) {
 		pubsub:    ps,
 	}
 
-	host.SetStreamHandler(protocol.ID("/taipei/chat/2019"), repl.chatProtocolHandler)
+	host.SetStreamHandler("/taipei/chat/2019", repl.chatProtocolHandler)
 	mdns.RegisterNotifee(repl)
 
 	return repl, nil
 }
 
 func (r *REPL) Run() {
-	commands := []struct {
+	type cmd struct {
 		name string
 		exec func() error
-	}{
+	}
+
+	commands := []cmd{
 		{"My info", r.handleMyInfo},
-		{"Introspect Host", r.handleIntrospect},
 		{"DHT: Bootstrap (public seeds)", func() error { return r.handleDHTBootstrap(dht.DefaultBootstrapPeers...) }},
 		{"DHT: Bootstrap (no seeds)", func() error { return r.handleDHTBootstrap() }},
 		{"DHT: Announce service", r.handleAnnounceService},
@@ -112,6 +121,21 @@ func (r *REPL) Run() {
 		{"Protocol: Accept incoming chat", r.handleAcceptChat},
 		{"Identify peer protocols", r.handleIdentifyPeer},
 		{"Switch to bootstrap mode", r.handleBootstrapMode},
+	}
+
+	if err := r.initIntrospectorClient(); err == nil {
+		commands = append(commands,
+			cmd{"Introspect: Request State", r.handleIntrospectRequest(pb.ClientCommand_STATE)},
+			cmd{"Introspect: Request Runtime", r.handleIntrospectRequest(pb.ClientCommand_RUNTIME)},
+			cmd{"Introspect: Enable Push Events", r.handleIntrospectEnablePush(pb.ClientCommand_EVENTS)},
+			cmd{"Introspect: Enable Push State", r.handleIntrospectEnablePush(pb.ClientCommand_STATE)},
+			cmd{"Introspect: Disable Push Events", r.handleIntrospectDisablePush(pb.ClientCommand_EVENTS)},
+			cmd{"Introspect: Disable Push State", r.handleIntrospectDisablePush(pb.ClientCommand_STATE)},
+			cmd{"Introspect: Pause Push", r.handleIntrospectPausePush},
+			cmd{"Introspect: Resume Push", r.handleIntrospectResumePush},
+		)
+	} else {
+		fmt.Println("no introspection actions available: ", err)
 	}
 
 	var str []string
