@@ -110,6 +110,7 @@ func (r *REPL) Run() {
 		{"My info", r.handleMyInfo},
 		{"DHT: Bootstrap (public seeds)", func() error { return r.handleDHTBootstrap(dht.DefaultBootstrapPeers...) }},
 		{"DHT: Bootstrap (no seeds)", func() error { return r.handleDHTBootstrap() }},
+		{"DHT: Print routing table", r.handlePrintRoutingTable},
 		{"DHT: Announce service", r.handleAnnounceService},
 		{"DHT: Find service providers", r.handleFindProviders},
 		{"Network: Connect to a peer", r.handleConnect},

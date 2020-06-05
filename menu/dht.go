@@ -20,7 +20,7 @@ func (r *REPL) handleBootstrapMode() error {
 }
 
 func (r *REPL) handleDHTBootstrap(seeds ...multiaddr.Multiaddr) error {
-	fmt.Println("Will bootstrap for 30 seconds...")
+	fmt.Println("Will bootstrap for 30 seconds in the background...")
 
 	ctx, cancel := context.WithTimeout(r.ctx, 30*time.Second)
 	defer cancel()
@@ -48,13 +48,12 @@ func (r *REPL) handleDHTBootstrap(seeds ...multiaddr.Multiaddr) error {
 
 	wg.Wait()
 
-	select {
-	case <-r.dht.RefreshRoutingTable():
-	case <-ctx.Done():
-	}
-
-	fmt.Println("bootstrap OK! Routing table:")
-	r.dht.RoutingTable().Print()
+	go func() {
+		select {
+		case <-r.dht.RefreshRoutingTable():
+		case <-ctx.Done():
+		}
+	}()
 
 	return nil
 }
@@ -83,4 +82,9 @@ func (r *REPL) handleFindProviders() error {
 		r.h.Peerstore().AddAddrs(p.ID, p.Addrs, 24*time.Hour)
 	}
 	return err
+}
+
+func (r *REPL) handlePrintRoutingTable() error {
+	r.dht.RoutingTable().Print()
+	return nil
 }
