@@ -11,16 +11,16 @@ import (
 	"github.com/multiformats/go-multiaddr"
 )
 
-func (t *REPL) handleBootstrapMode() error {
+func (r *REPL) handleBootstrapMode() error {
 	fmt.Println("this node will now serve as a DHT bootstrap node, addrs:")
-	fmt.Println("peer ID:", t.h.ID())
-	fmt.Println("addrs:", t.h.Addrs())
+	fmt.Println("peer ID:", r.h.ID())
+	fmt.Println("addrs:", r.h.Addrs())
 	time.Sleep(24 * time.Hour)
 	return nil
 }
 
 func (r *REPL) handleDHTBootstrap(seeds ...multiaddr.Multiaddr) error {
-	fmt.Println("Will bootstrap for 30 seconds...")
+	fmt.Println("Will bootstrap for 30 seconds in the background...")
 
 	ctx, cancel := context.WithTimeout(r.ctx, 30*time.Second)
 	defer cancel()
@@ -48,18 +48,18 @@ func (r *REPL) handleDHTBootstrap(seeds ...multiaddr.Multiaddr) error {
 
 	wg.Wait()
 
-	if err := r.dht.BootstrapRandom(ctx); err != nil && err != context.DeadlineExceeded {
-		return fmt.Errorf("failed while bootstrapping DHT: %w", err)
-	}
-
-	fmt.Println("bootstrap OK! Routing table:")
-	r.dht.RoutingTable().Print()
+	go func() {
+		select {
+		case <-r.dht.RefreshRoutingTable():
+		case <-ctx.Done():
+		}
+	}()
 
 	return nil
 }
 
-func (t *REPL) handleAnnounceService() error {
-	rd := disc.NewRoutingDiscovery(t.dht)
+func (r *REPL) handleAnnounceService() error {
+	rd := disc.NewRoutingDiscovery(r.dht)
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
@@ -82,4 +82,9 @@ func (r *REPL) handleFindProviders() error {
 		r.h.Peerstore().AddAddrs(p.ID, p.Addrs, 24*time.Hour)
 	}
 	return err
+}
+
+func (r *REPL) handlePrintRoutingTable() error {
+	r.dht.RoutingTable().Print()
+	return nil
 }
