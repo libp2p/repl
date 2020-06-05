@@ -63,7 +63,8 @@ func NewREPL() (*REPL, error) {
 			introspect.NewDefaultIntrospector,
 			ws.EndpointWithConfig(&ws.EndpointConfig{ListenAddrs: []string{"127.0.0.1:"}}),
 		),
-		libp2p.BandwidthReporter(metrics.NewBandwidthCounter()))
+		libp2p.BandwidthReporter(metrics.NewBandwidthCounter()),
+	)
 
 	if err != nil {
 		cancel()
