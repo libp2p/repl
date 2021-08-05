@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	discovery "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
 	disc "github.com/libp2p/go-libp2p-discovery"
 	"github.com/multiformats/go-multiaddr"
@@ -63,7 +64,7 @@ func (r *REPL) handleAnnounceService() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	_, err := rd.Advertise(ctx, "taipei2019", disc.TTL(10*time.Minute))
+	_, err := rd.Advertise(ctx, "taipei2019", discovery.TTL(10*time.Minute))
 	return err
 }
 

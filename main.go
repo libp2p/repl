@@ -3,13 +3,14 @@ package main
 import (
 	"os"
 	"os/signal"
+	"syscall"
 
 	"github.com/libp2p/repl/menu"
 )
 
 func main() {
 	ch := make(chan os.Signal)
-	signal.Notify(ch, os.Kill)
+	signal.Notify(ch, syscall.SIGTERM)
 
 	repl, err := menu.NewREPL()
 	if err != nil {

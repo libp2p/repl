@@ -1,6 +1,7 @@
 package menu
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/manifoldco/promptui"
@@ -15,7 +16,11 @@ func (r *REPL) handleSubscribeToTopic() error {
 		return err
 	}
 
-	sub, err := r.pubsub.Subscribe(topic)
+	t, err := r.pubsub.Join(topic)
+	if err != nil {
+		return err
+	}
+	sub, err := t.Subscribe()
 	if err != nil {
 		return err
 	}
@@ -45,21 +50,23 @@ func (r *REPL) handlePublishToTopic() error {
 		return err
 	}
 
-	p = promptui.Prompt{
-		Label: "data",
-	}
+	p = promptui.Prompt{Label: "data"}
 	data, err := p.Run()
 	if err != nil {
 		return err
 	}
 
-	return r.pubsub.Publish(topic, []byte(data))
+	t, err := r.pubsub.Join(topic)
+	if err != nil {
+		return err
+	}
+	return t.Publish(context.Background(), []byte(data))
 }
 
 func (r *REPL) handlePrintInboundMessages() error {
 	r.m.RLock()
 	topics := make([]string, 0, len(r.messages))
-	for k, _ := range r.messages {
+	for k := range r.messages {
 		topics = append(topics, k)
 	}
 	r.m.RUnlock()

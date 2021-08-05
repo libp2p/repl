@@ -22,7 +22,7 @@ func (r *REPL) handleInitiateChat() error {
 	if err != nil {
 		return err
 	}
-	pid, err := peer.IDB58Decode(id)
+	pid, err := peer.Decode(id)
 	if err != nil {
 		return err
 	}

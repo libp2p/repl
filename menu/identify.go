@@ -18,7 +18,7 @@ func (r *REPL) handleIdentifyPeer() error {
 		return err
 	}
 
-	pid, err := peer.IDB58Decode(id)
+	pid, err := peer.Decode(id)
 	if err != nil {
 		return err
 	}
