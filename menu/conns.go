@@ -24,6 +24,9 @@ func (r *REPL) handleConnect() error {
 		return err
 	}
 	ai, err := peer.AddrInfoFromP2pAddr(ma)
+	if err != nil {
+		return err
+	}
 	ctx, cancel := context.WithTimeout(r.ctx, 30*time.Second)
 	defer cancel()
 	return r.h.Connect(ctx, *ai)
