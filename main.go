@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	ch := make(chan os.Signal)
+	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, syscall.SIGTERM)
 
 	repl, err := menu.NewREPL()
