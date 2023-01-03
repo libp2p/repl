@@ -19,7 +19,7 @@ import (
 	"github.com/libp2p/go-libp2p/p2p/discovery"
 
 	dht "github.com/libp2p/go-libp2p-kad-dht"
-	"github.com/libp2p/go-libp2p-pubsub"
+	pubsub "github.com/libp2p/go-libp2p-pubsub"
 
 	"github.com/gorilla/websocket"
 	"github.com/manifoldco/promptui"
