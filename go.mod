@@ -1,6 +1,6 @@
 module github.com/libp2p/repl
 
-go 1.18
+go 1.19
 
 require (
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e
